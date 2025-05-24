@@ -15,3 +15,9 @@ CREATE TABLE AddressBook (
 
 selectAll:
 SELECT * FROM AddressBook;
+
+insertContact:
+INSERT OR REPLACE INTO AddressBook (
+    CustomerID, CompanyName, ContactName, ContactTitle, Address,
+    City, Email, Region, PostalCode, Country, Phone, Fax
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

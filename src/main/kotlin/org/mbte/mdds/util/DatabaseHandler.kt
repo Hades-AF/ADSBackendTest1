@@ -26,17 +26,27 @@ class DatabaseHandler(private val url: String) {
     // No longer needed, leaving for assessment purposes
     fun initContactsTable() {}
 
-
+    // Using insert query to add new record to the DB
+    // SQLDelight handles with parameterized queries
     fun insertContact(contact: Contact) {
-        getConnection()?.use { connection ->
-            val statement = connection.createStatement()
-            val sql = "TODO" //TODO
-			kotlin.runCatching { statement.executeUpdate(sql) }
-				.onFailure { 
-					System.err.println("Failed to execute SQL: $sql")
-					it.printStackTrace()
-				}
-            
+        runCatching {
+            queries.insertContact(
+                CustomerID = contact.id,
+                CompanyName = contact.companyName,
+                ContactName = contact.name,
+                ContactTitle = contact.title,
+                Address = contact.address,
+                City = contact.city,
+                Email = contact.email,
+                Region = contact.region,
+                PostalCode = contact.zip,
+                Country = contact.country,
+                Phone = contact.phone,
+                Fax = contact.fax
+            )
+        }.onFailure {
+            System.err.println("Failed to insert contact.")
+            it.printStackTrace()
         }
     }
     
