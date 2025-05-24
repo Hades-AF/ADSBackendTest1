@@ -1,61 +1,84 @@
 package org.mbte.mdds.util
 
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import org.mbte.mdds.AddressBookQueries
+import org.mbte.mdds.AddressDatabase
 import org.mbte.mdds.tests.Contact
 import java.sql.Connection
 import java.sql.DriverManager
 
 class DatabaseHandler(private val url: String) {
 
+    // Creating in-memory SQLite Database
+    private var driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY);
+    private var queries: AddressBookQueries;
+
+    // Initialize SQLDelight file with Database
+    // Creating instance for accessing queries
 	init {
-        // Register the SQLite JDBC driver
-        Class.forName("org.sqlite.JDBC")
+        AddressDatabase.Schema.create(driver)
+
+        val db = AddressDatabase(driver)
+        queries = db.addressBookQueries
     }
 
-    fun initContactsTable() {
-        getConnection()?.use { connection ->
-            val statement = connection.createStatement()
-            val sql = "TODO" //TODO
-            statement.executeUpdate(sql)
-        }
-    }
+    // No longer needed, leaving for assessment purposes
+    fun initContactsTable() {}
 
+    // Using insert query to add new record to the DB
+    // SQLDelight handles with parameterized queries
     fun insertContact(contact: Contact) {
-        getConnection()?.use { connection ->
-            val statement = connection.createStatement()
-            val sql = "TODO" //TODO
-			kotlin.runCatching { statement.executeUpdate(sql) }
-				.onFailure { 
-					System.err.println("Failed to execute SQL: $sql")
-					it.printStackTrace()
-				}
-            
+        runCatching {
+            queries.insertContact(
+                CustomerID = contact.id,
+                CompanyName = contact.companyName,
+                ContactName = contact.name,
+                ContactTitle = contact.title,
+                Address = contact.address,
+                City = contact.city,
+                Email = contact.email,
+                Region = contact.region,
+                PostalCode = contact.zip,
+                Country = contact.country,
+                Phone = contact.phone,
+                Fax = contact.fax
+            )
+        }.onFailure {
+            System.err.println("Failed to insert contact.")
+            it.printStackTrace()
         }
     }
-    
+
+    // Obtaining all records from AddressBook table and structuring them as a list
+    // Mapping each record to correct Contact data class format
     fun getAllContacts(): List<Contact> {
-		getConnection()?.use { connection ->
-            val statement = connection.createStatement()
-            val sql = "TODO"
-			val result = kotlin.runCatching { statement.executeQuery(sql) }
-			return if (result.isFailure) {
-				System.err.println("Failed to execute SQL: $sql")
-				result.exceptionOrNull()?.printStackTrace()
-				emptyList()
-			} else {
-				//TODO
-				emptyList()
-			}
+		return runCatching {
+            queries.selectAll()
+                .executeAsList()
+                .map {
+                    Contact(
+                        id = it.CustomerID,
+                        companyName = it.CompanyName ?: "",
+                        name = it.ContactName ?: "",
+                        title = it.ContactTitle ?: "",
+                        address = it.Address ?: "",
+                        city = it.City ?: "",
+                        email = it.Email ?: "",
+                        region = it.Region,
+                        zip = it.PostalCode,
+                        country = it.Country ?: "",
+                        phone = it.Phone ?: "",
+                        fax = it.Fax
+                    )
+                }
+        }.getOrElse {
+            System.err.println("Failed to retrieve contacts.")
+            it.printStackTrace()
+            emptyList()
         }
-        return emptyList()
 	}
 
-    private fun getConnection(): Connection? {
-        return try {
-            DriverManager.getConnection(url)
-        } catch (e: Exception) {
-            System.err.println("Failed to get connection to SQLite!!")
-            e.printStackTrace()
-            null
-        }
-    }
+    // No longer needed, leaving for assessment purposes
+    private fun getConnection(): Connection? {return null}
 }

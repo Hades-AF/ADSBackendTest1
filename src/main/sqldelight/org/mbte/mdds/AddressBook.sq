@@ -12,3 +12,12 @@ CREATE TABLE AddressBook (
     Phone TEXT,
     Fax TEXT
 );
+
+selectAll:
+SELECT * FROM AddressBook;
+
+insertContact:
+INSERT OR REPLACE INTO AddressBook (
+    CustomerID, CompanyName, ContactName, ContactTitle, Address,
+    City, Email, Region, PostalCode, Country, Phone, Fax
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
