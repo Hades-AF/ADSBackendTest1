@@ -25,3 +25,10 @@ For additional credits:
 
 ## Constraints
 1. No new libraries shall be added to complete the assessment
+
+## User Guide
+1. Application utilizing Kotlin, SQDelight, Coroutines.
+2. Run ADSBackendTest1 to process an XMLFile.
+3. Store data in database.
+4. Retrieve records from database.
+5. Write to file in JSON.
