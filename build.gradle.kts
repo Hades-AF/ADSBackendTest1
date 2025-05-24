@@ -22,6 +22,11 @@ dependencies {
     implementation("app.cash.sqldelight:coroutines-extensions:2.0.1")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 sqldelight {
     databases {
         create("AddressDatabase") {
@@ -37,6 +42,7 @@ tasks.test {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
+
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
 	jvmTarget = "1.8"
