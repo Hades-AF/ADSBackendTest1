@@ -1,5 +1,6 @@
 package org.mbte.mdds.tests
 
+import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
 import org.mbte.mdds.util.DatabaseHandler
@@ -11,7 +12,7 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = runBlocking {
 	val test = ADSBackendTest1()
 	val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 	val userHome = File(System.getProperty("user.home"))
@@ -31,7 +32,7 @@ fun main(args: Array<String>) {
 		test.loadAddressBook(document)
 	} ?: run {
 		System.err.println("Failed to load XML, Document is NULL")
-		return
+		return@runBlocking
 	}
 
 	// 3. Insert each contact into the Database
