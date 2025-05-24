@@ -2,6 +2,7 @@ package org.mbte.mdds.tests
 
 import org.json.JSONObject
 import org.mbte.mdds.util.DatabaseHandler
+import org.mbte.mdds.util.loadXmlFromFile
 import org.w3c.dom.Document
 import java.io.File
 import java.time.LocalDateTime
@@ -15,10 +16,14 @@ fun main(args: Array<String>) {
 	val dbFile = File(userHome, "${test.javaClass.simpleName}-$time.db")
 	dbFile.createNewFile()
 	val dbHandler = DatabaseHandler("jdbc:sqlite:${dbFile.absolutePath}")
-	dbHandler.initContactsTable()
+
+	// No longer needed, leaving for assessment purposes
+	//	dbHandler.initContactsTable()
+
+	// 1. Load the xml file 'ab.xml'
+	val document = test.loadXml("src/main/resources/ab.xml");
 
 	/**
-	 * 1. Load the xml file 'ab.xml'
 	 * 2. Load the address book contents from 'ab.xml'
 	 * 3. Insert each contact into the Database
 	 * 4. Retrieve all contacts from the Database
@@ -54,8 +59,10 @@ interface AddressBookInterface {
 }
 
 class ADSBackendTest1(): AddressBookInterface {
+
+	// Convert fileName to File format and loadXML
 	override fun loadXml(fileName: String): Document? {
-		TODO("Not yet implemented")
+		return loadXmlFromFile(File(fileName))
 	}
 
 	override fun loadAddressBook(doc: Document): AddressBook {
