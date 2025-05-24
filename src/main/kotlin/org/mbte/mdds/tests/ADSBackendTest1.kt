@@ -32,8 +32,16 @@ fun main(args: Array<String>) {
 		System.err.println("Failed to load XML, Document is NULL")
 		return
 	}
+
+	// 3. Insert each contact into the Database
+	addressBook.contacts.forEach { contact ->
+		dbHandler.insertContact(contact)
+	}
+
+	// 4. Insert each contact into the Database
+	val contacts = dbHandler.getAllContacts()
+
 	/**
-	 * 3. Insert each contact into the Database
 	 * 4. Retrieve all contacts from the Database
 	 * 5. Convert the contacts from the Database into Json and write to file
 	 */
