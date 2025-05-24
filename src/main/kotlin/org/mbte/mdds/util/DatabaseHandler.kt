@@ -1,23 +1,31 @@
 package org.mbte.mdds.util
 
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import org.mbte.mdds.AddressBookQueries
+import org.mbte.mdds.AddressDatabase
 import org.mbte.mdds.tests.Contact
 import java.sql.Connection
 import java.sql.DriverManager
 
 class DatabaseHandler(private val url: String) {
 
+    // Creating in-memory SQLite Database
+    private var driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY);
+    private var queries: AddressBookQueries;
+
+    // Initialize SQLDelight file with Database
+    // Creating instance for accessing queries
 	init {
-        // Register the SQLite JDBC driver
-        Class.forName("org.sqlite.JDBC")
+        AddressDatabase.Schema.create(driver)
+
+        val db = AddressDatabase(driver)
+        queries = db.addressBookQueries
     }
 
-    fun initContactsTable() {
-        getConnection()?.use { connection ->
-            val statement = connection.createStatement()
-            val sql = "TODO" //TODO
-            statement.executeUpdate(sql)
-        }
-    }
+    // No longer needed, leaving for assessment purposes
+    fun initContactsTable() {}
+
 
     fun insertContact(contact: Contact) {
         getConnection()?.use { connection ->

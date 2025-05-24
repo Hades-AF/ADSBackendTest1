@@ -12,3 +12,6 @@ CREATE TABLE AddressBook (
     Phone TEXT,
     Fax TEXT
 );
+
+selectAll:
+SELECT * FROM AddressBook;
