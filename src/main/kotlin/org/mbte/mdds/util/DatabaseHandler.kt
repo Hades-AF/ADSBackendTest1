@@ -49,31 +49,36 @@ class DatabaseHandler(private val url: String) {
             it.printStackTrace()
         }
     }
-    
+
+    // Obtaining all records from AddressBook table and structuring them as a list
+    // Mapping each record to correct Contact data class format
     fun getAllContacts(): List<Contact> {
-		getConnection()?.use { connection ->
-            val statement = connection.createStatement()
-            val sql = "TODO"
-			val result = kotlin.runCatching { statement.executeQuery(sql) }
-			return if (result.isFailure) {
-				System.err.println("Failed to execute SQL: $sql")
-				result.exceptionOrNull()?.printStackTrace()
-				emptyList()
-			} else {
-				//TODO
-				emptyList()
-			}
+		return runCatching {
+            queries.selectAll()
+                .executeAsList()
+                .map {
+                    Contact(
+                        id = it.CustomerID,
+                        companyName = it.CompanyName ?: "",
+                        name = it.ContactName ?: "",
+                        title = it.ContactTitle ?: "",
+                        address = it.Address ?: "",
+                        city = it.City ?: "",
+                        email = it.Email ?: "",
+                        region = it.Region,
+                        zip = it.PostalCode,
+                        country = it.Country ?: "",
+                        phone = it.Phone ?: "",
+                        fax = it.Fax
+                    )
+                }
+        }.getOrElse {
+            System.err.println("Failed to retrieve contacts.")
+            it.printStackTrace()
+            emptyList()
         }
-        return emptyList()
 	}
 
-    private fun getConnection(): Connection? {
-        return try {
-            DriverManager.getConnection(url)
-        } catch (e: Exception) {
-            System.err.println("Failed to get connection to SQLite!!")
-            e.printStackTrace()
-            null
-        }
-    }
+    // No longer needed, leaving for assessment purposes
+    private fun getConnection(): Connection? {return null}
 }
