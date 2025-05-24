@@ -1,5 +1,6 @@
 package org.mbte.mdds.tests
 
+import org.json.JSONArray
 import org.json.JSONObject
 import org.mbte.mdds.util.DatabaseHandler
 import org.mbte.mdds.util.getDirectChildren
@@ -41,14 +42,14 @@ fun main(args: Array<String>) {
 	// 4. Insert each contact into the Database
 	val contacts = dbHandler.getAllContacts()
 
-	/**
-	 * 4. Retrieve all contacts from the Database
-	 * 5. Convert the contacts from the Database into Json and write to file
-	 */
-	
+	// 5. Convert the contacts from the Database into Json and write to file
+	val outputJson = test.convertToJson(AddressBook(contacts))
+	val output = File(userHome, "${test.javaClass.simpleName}-$time.json")
+	test.printOutput(outputJson, output)
+
 	println("Assessment complete.")
 	println("Database file located at ${dbFile.absolutePath}")
-//	println("JSON output located at ${output.absolutePath}")
+	println("JSON output located at ${output.absolutePath}")
 }
 
 data class AddressBook(val contacts: List<Contact>)
@@ -104,12 +105,34 @@ class ADSBackendTest1(): AddressBookInterface {
 		return AddressBook(contacts)
 	}
 
+	// Storing each AddressBook record in a JSONObject
+	// Storing each JSONObject in JSONArray and returning as JSONObject
 	override fun convertToJson(addressBook: AddressBook): JSONObject {
-		TODO("Not yet implemented")
+		val addressBookJsonFormat = JSONObject()
+		val jsonArray = JSONArray()
+		addressBook.contacts.forEach {
+			val jsonObject = JSONObject()
+			jsonObject.put("id", it.id)
+			jsonObject.put("companyName", it.companyName)
+			jsonObject.put("name", it.name)
+			jsonObject.put("title", it.title)
+			jsonObject.put("address", it.address)
+			jsonObject.put("city", it.city)
+			jsonObject.put("email", it.email)
+			jsonObject.put("region", it.region)
+			jsonObject.put("zip", it.zip)
+			jsonObject.put("country", it.country)
+			jsonObject.put("phone", it.phone)
+			jsonObject.put("fax", it.fax)
+			jsonArray.put(jsonObject)
+		}
+		addressBookJsonFormat.put("contacts", jsonArray)
+		return addressBookJsonFormat
 	}
 
+	// Write text to file with indentFactor for legibility.
 	override fun printOutput(json: JSONObject, output: File) {
-		TODO("Not yet implemented")
+		output.writeText(json.toString(4))
 	}
 
 }
