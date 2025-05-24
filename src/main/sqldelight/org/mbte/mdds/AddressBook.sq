@@ -1,0 +1,14 @@
+CREATE TABLE AddressBook (
+    CustomerID TEXT PRIMARY KEY,
+    CompanyName TEXT,
+    ContactName TEXT,
+    ContactTitle TEXT,
+    Address TEXT,
+    City TEXT,
+    Email TEXT,
+    Region TEXT,
+    PostalCode TEXT,
+    Country TEXT,
+    Phone TEXT,
+    Fax TEXT
+);

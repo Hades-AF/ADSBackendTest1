@@ -5,6 +5,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 class DatabaseHandler(private val url: String) {
+
 	init {
         // Register the SQLite JDBC driver
         Class.forName("org.sqlite.JDBC")
