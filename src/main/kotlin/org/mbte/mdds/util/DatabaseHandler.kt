@@ -13,15 +13,15 @@ class DatabaseHandler(private val url: String) {
 
     // Creating in-memory SQLite Database
     private var driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY);
+    private var database: AddressDatabase
     private var queries: AddressBookQueries;
 
     // Initialize SQLDelight file with Database
     // Creating instance for accessing queries
 	init {
         AddressDatabase.Schema.create(driver)
-
-        val db = AddressDatabase(driver)
-        queries = db.addressBookQueries
+        database = AddressDatabase(driver)
+        queries = database.addressBookQueries
     }
 
     // No longer needed, leaving for assessment purposes
